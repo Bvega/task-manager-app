@@ -10,25 +10,14 @@
 
   <!-- Task Input Form -->
   <div id="taskForm">
-    <input
-      type="text"
-      id="taskName"
-      placeholder="Task Name"
-    />                                                     <!-- Field for the task’s name -->
-    <input
-      type="text"
-      id="taskCategory"
-      placeholder="Category"
-    />                                                     <!-- Field for the task’s category -->
-    <input
-      type="date"
-      id="taskDeadline"
-    />                                                     <!-- Field for the task’s deadline -->
-    <select id="taskStatus">                              <!-- Dropdown for initial status -->
+    <input type="text"   id="taskName"     placeholder="Task Name"   /> <!-- Field for task’s name -->
+    <input type="text"   id="taskCategory" placeholder="Category"    /> <!-- Field for task’s category -->
+    <input type="date"   id="taskDeadline"                   />           <!-- Field for task’s deadline -->
+    <select id="taskStatus">                                         <!-- Dropdown for initial status -->
       <option value="In Progress">In Progress</option>
       <option value="Completed">Completed</option>
     </select>
-    <button id="addTaskBtn">Add Task</button>              <!-- Button to add a new task -->
+    <button id="addTaskBtn">Add Task</button>               <!-- Button to add a new task -->
   </div>
 
   <!-- Task List Display -->
