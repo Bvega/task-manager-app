@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">                                  <!-- Character encoding -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">  <!-- Responsive on mobile -->
+  <title>Task Manager App</title>                         <!-- Browser tab title -->
+  <link rel="stylesheet" href="style.css">                <!-- Link to CSS -->
+</head>
+<body>
+
+  <!-- Task Input Form -->
+  <div id="taskForm">
+    <input
+      type="text"
+      id="taskName"
+      placeholder="Task Name"
+    />                                                     <!-- Field for the task’s name -->
+    <input
+      type="text"
+      id="taskCategory"
+      placeholder="Category"
+    />                                                     <!-- Field for the task’s category -->
+    <input
+      type="date"
+      id="taskDeadline"
+    />                                                     <!-- Field for the task’s deadline -->
+    <select id="taskStatus">                              <!-- Dropdown for initial status -->
+      <option value="In Progress">In Progress</option>
+      <option value="Completed">Completed</option>
+    </select>
+    <button id="addTaskBtn">Add Task</button>              <!-- Button to add a new task -->
+  </div>
+
+  <!-- Task List Display -->
+  <ul id="taskList"></ul>                                 <!-- Container where tasks will be rendered -->
+
+  <script src="app.js"></script>                         <!-- Link to JavaScript -->
+</body>
+</html>
