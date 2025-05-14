@@ -1,46 +1,185 @@
 // app.js
-// Task Manager App logic (Feature 3)
+// Task Manager App logic (including Feature 5)
 
 // 1. Data store
-const tasks = [];  // will hold task objects
+const tasks = [];  // holds task objects
 
 // 2. Reference DOM elements
-const taskNameInput     = document.getElementById("taskName");     // Task name input
-const taskCategoryInput = document.getElementById("taskCategory"); // Task category input
-const taskDeadlineInput = document.getElementById("taskDeadline"); // Task deadline input
-const taskStatusSelect  = document.getElementById("taskStatus");   // Task status dropdown
-const addTaskBtn        = document.getElementById("addTaskBtn");   // Add Task button
-const taskList          = document.getElementById("taskList");     // UL container for tasks
+const taskNameInput     = document.getElementById("taskName");
+const taskCategoryInput = document.getElementById("taskCategory");
+const taskDeadlineInput = document.getElementById("taskDeadline");
+const taskStatusSelect  = document.getElementById("taskStatus");
+const addTaskBtn        = document.getElementById("addTaskBtn");
+const statusFilter      = document.getElementById("statusFilter");
+const categoryFilter    = document.getElementById("categoryFilter");
+const taskList          = document.getElementById("taskList");
 
-// 3. renderTasks(): updates the page to show all tasks
+// 3. renderTasks(): handles overdue logic, filtering, and status dropdowns
 function renderTasks() {
-  taskList.innerHTML = "";                                      // clear existing list
+  const statusValue   = statusFilter.value;
+  const categoryValue = categoryFilter.value;
 
-  tasks.forEach(function(task) {
-    const li = document.createElement("li");                   // create a list item
-    li.innerHTML = `
-      <strong>${task.name}</strong> -                         <!-- task name -->
-      ${task.category} -                                      <!-- task category -->
-      Due: ${task.deadline} -                                 <!-- task deadline -->
-      Status: ${task.status}                                  <!-- task status -->
+  // rebuild category dropdown options
+  const categories = ["All", ...new Set(tasks.map(t => t.category).filter(c => c))];
+  categoryFilter.innerHTML = categories
+    .map(cat => `<option value="${cat}"${cat === categoryValue ? " selected" : ""}>${cat}</option>`)
+    .join("");
+
+  taskList.innerHTML = "";                             // clear existing list
+  const today = new Date().toISOString().split("T")[0]; // YYYY-MM-DD
+
+  tasks.forEach((task, index) => {
+    // auto-mark overdue
+    if (task.status !== "Completed" && task.deadline < today) {
+      task.status = "Overdue";
+    }
+
+    // apply filters
+    if (statusValue !== "All" && task.status !== statusValue) return;
+    if (categoryValue !== "All" && task.category !== categoryValue) return;
+
+    // build list item with status dropdown
+    const li = document.createElement("li");
+    const statusSelect = `
+      <select data-index="${index}">
+        <option value="In Progress"${task.status === "In Progress" ? " selected" : ""}>In Progress</option>
+        <option value="Completed"${task.status === "Completed" ? " selected" : ""}>Completed</option>
+        <option value="Overdue"${task.status === "Overdue" ? " selected" : ""}>Overdue</option>
+      </select>
     `;
-    taskList.appendChild(li);                                 // add item to UL
+    li.innerHTML = `
+      <strong>${task.name}</strong> -
+      ${task.category} -
+      Due: ${task.deadline} -
+      Status: ${statusSelect}
+    `;
+    taskList.appendChild(li);
+  });
+
+  // attach dropdown change listeners
+  document.querySelectorAll("#taskList select").forEach(sel => {
+    sel.addEventListener("change", function() {
+      const i = parseInt(this.dataset.index, 10);
+      tasks[i].status = this.value;
+      renderTasks();
+    });
   });
 }
 
 // 4. Add Task handler
-addTaskBtn.addEventListener("click", function() {
-  // read inputs
+addTaskBtn.addEventListener("click", () => {
   const name     = taskNameInput.value.trim();
   const category = taskCategoryInput.value.trim();
   const deadline = taskDeadlineInput.value;
   const status   = taskStatusSelect.value;
 
-  // create and store object
-  tasks.push({ name, category, deadline, status });
+  if (!name || !category || !deadline) {
+    alert("Please fill in all fields.");
+    return;
+  }// app.js
+// Task Manager App logic (Feature 6: localStorage)
 
-  // update the display
-  renderTasks();
+// 1. Load tasks from localStorage or start empty
+const tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+
+// 2. Reference DOM elements
+const taskNameInput     = document.getElementById("taskName");
+const taskCategoryInput = document.getElementById("taskCategory");
+const taskDeadlineInput = document.getElementById("taskDeadline");
+const taskStatusSelect  = document.getElementById("taskStatus");
+const addTaskBtn        = document.getElementById("addTaskBtn");
+const statusFilter      = document.getElementById("statusFilter");
+const categoryFilter    = document.getElementById("categoryFilter");
+const taskList          = document.getElementById("taskList");
+
+// 3. saveTasks(): persist the tasks array to localStorage
+function saveTasks() {
+  localStorage.setItem("tasks", JSON.stringify(tasks));
+}
+
+// 4. renderTasks(): updates the UI, handles overdue, filtering, and status dropdowns
+function renderTasks() {
+  const statusValue   = statusFilter.value;
+  const categoryValue = categoryFilter.value;
+
+  // rebuild category options
+  const categories = ["All", ...new Set(tasks.map(t => t.category).filter(c => c))];
+  categoryFilter.innerHTML = categories
+    .map(cat => `<option value="${cat}"${cat === categoryValue ? " selected" : ""}>${cat}</option>`)
+    .join("");
+
+  taskList.innerHTML = "";                            
+  const today = new Date().toISOString().split("T")[0];
+
+  tasks.forEach((task, index) => {
+    if (task.status !== "Completed" && task.deadline < today) {
+      task.status = "Overdue";                     
+      saveTasks();                                  // persist overdue update
+    }
+
+    if (statusValue !== "All" && task.status !== statusValue) return;
+    if (categoryValue !== "All" && task.category !== categoryValue) return;
+
+    const li = document.createElement("li");
+    const statusSelect = `
+      <select data-index="${index}">
+        <option value="In Progress"${task.status === "In Progress" ? " selected" : ""}>In Progress</option>
+        <option value="Completed"${task.status === "Completed" ? " selected" : ""}>Completed</option>
+        <option value="Overdue"${task.status === "Overdue" ? " selected" : ""}>Overdue</option>
+      </select>
+    `;
+    li.innerHTML = `
+      <strong>${task.name}</strong> -
+      ${task.category} -
+      Due: ${task.deadline} -
+      Status: ${statusSelect}
+    `;
+    taskList.appendChild(li);
+  });
+
+  // wire status-change listeners
+  document.querySelectorAll("#taskList select").forEach(sel => {
+    sel.addEventListener("change", function() {
+      const i = parseInt(this.dataset.index, 10);
+      tasks[i].status = this.value;                 
+      saveTasks();                                  // persist status change
+      renderTasks();                                // refresh UI
+    });
+  });
+}
+
+// 5. Add Task handler
+addTaskBtn.addEventListener("click", () => {
+  const name     = taskNameInput.value.trim();
+  const category = taskCategoryInput.value.trim();
+  const deadline = taskDeadlineInput.value;
+  const status   = taskStatusSelect.value;
+
+  if (!name || !category || !deadline) {
+    alert("Please fill in all fields.");
+    return;
+  }
+
+  tasks.push({ name, category, deadline, status });
+  saveTasks();                                     // persist new task
+  renderTasks();                                   // update UI
+
+  taskNameInput.value     = "";                     
+  taskCategoryInput.value = "";                     
+  taskDeadlineInput.value = "";                     
+  taskStatusSelect.value  = "In Progress";         
+});
+
+// 6. Filter change handlers
+statusFilter.addEventListener("change", renderTasks);
+categoryFilter.addEventListener("change", renderTasks);
+
+// 7. Initial render on page load
+renderTasks();
+
+
+  tasks.push({ name, category, deadline, status });  // store task
+  renderTasks();                                     // update UI
 
   // reset form
   taskNameInput.value     = "";
@@ -48,3 +187,10 @@ addTaskBtn.addEventListener("click", function() {
   taskDeadlineInput.value = "";
   taskStatusSelect.value  = "In Progress";
 });
+
+// 5. Filter change handlers
+statusFilter.addEventListener("change", renderTasks);
+categoryFilter.addEventListener("change", renderTasks);
+
+// Initial render (to build empty category list)
+renderTasks();
