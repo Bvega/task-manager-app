@@ -1,24 +1,22 @@
-## Stage 1: Scaffold & Input Form
+## Stage 2: Capture Inputs & Store Tasks
 
-1. **Create folders & files**  
-   - Top-level: `.gitignore`, `README.md`  
-   - `src/`: `index.html`, `style.css`, `app.js`  
-   - `docs/`: `tutorial.md`, `changelog.md`
+1. **Initialize tasks array**  
+   - In `src/app.js`, create `const tasks = [];` to hold all task objects.
 
-2. **HTML boilerplate**  
-   - Defined `<!DOCTYPE html>` and `<head>` with charset, viewport, title.  
-   - Linked `style.css` and `app.js`.
+2. **Reference DOM elements**  
+   - Use `document.getElementById` to grab each input (`taskName`, `taskCategory`, `taskDeadline`, `taskStatus`) and the `addTaskBtn`.
 
-3. **Added Task Form**  
-   - A `<div id="taskForm">` containing:  
-     - Text `<input>` for **Task Name**  
-     - Text `<input>` for **Category**  
-     - Date `<input>` for **Deadline**  
-     - `<select>` for **Status** with “In Progress”/“Completed”  
-     - `<button>` **Add Task**
+3. **Add event listener**  
+   - On `addTaskBtn.click`, read values from each input and dropdown.
 
-4. **Added Task List container**  
-   - An empty `<ul id="taskList"></ul>` to display tasks later.
+4. **Build task object**  
+   - Create `{ name, category, deadline, status }` using the captured values.
 
-5. **Initialized blank CSS & JS**  
-   - `style.css` and `app.js` contain only file‐header comments.
+5. **Push to array**  
+   - Use `tasks.push(task)` to store the new task.
+
+6. **Reset form**  
+   - Clear input fields and reset status dropdown to “In Progress”.
+
+7. **Verify**  
+   - `console.log(tasks)` to confirm tasks are being stored correctly.
