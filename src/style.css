@@ -1,4 +1,75 @@
 /* style.css
- * Task Manager App styles
- * (Feature 1: no custom styles yet)
+ * Task Manager App styles (Warm Palette)
  */
+
+/* Page background and font */
+body {
+  font-family: Arial, sans-serif;    /* Clean, readable font */
+  margin: 20px;                      /* Space around content */
+  background-color: #FFF5E1;         /* Soft warm ivory background */
+  color: #5D4037;                    /* Deep warm brown text */
+}
+
+/* Layout for form and filters */
+#taskForm,
+#filters {
+  display: flex;                     /* Arrange controls in a row */
+  gap: 10px;                         /* Space between elements */
+  margin-bottom: 20px;               /* Space below forms */
+}
+
+/* Inputs, selects, and button base styles */
+#taskForm input,
+#taskForm select,
+#taskForm button,
+#filters select {
+  padding: 8px;                      /* Inner spacing */
+  border: 1px solid #FFB997;        /* Warm coral border */
+  border-radius: 4px;               /* Rounded corners */
+  background-color: #FFE8D6;        /* Light peach background */
+  color: #5D4037;                    /* Brown text for readability */
+}
+
+/* Add Task button */
+#addTaskBtn {
+  background-color: #FF8A65;         /* Warm orange button */
+  color: #FFF;                       /* White text */
+  border: none;                      /* Remove default border */
+  cursor: pointer;                   /* Pointer on hover */
+}
+
+#addTaskBtn:hover {
+  background-color: #F4511E;         /* Darker burnt orange on hover */
+}
+
+/* Task list styling */
+#taskList {
+  list-style: none;                  /* Remove bullets */
+  padding: 0;                        /* Remove default padding */
+}
+
+#taskList li {
+  background-color: #FFDDD2;         /* Soft coral card background */
+  margin-bottom: 10px;               /* Space between tasks */
+  padding: 10px;                     /* Inner spacing */
+  border-left: 4px solid #FF8A65;    /* Warm accent bar */
+  border-radius: 4px;                /* Rounded corners */
+  display: flex;                     /* Align content horizontally */
+  justify-content: space-between;    /* Space between text and dropdown */
+  align-items: center;               /* Vertically center items */
+}
+
+/* Task name emphasis */
+#taskList li strong {
+  margin-right: 10px;                /* Space after task name */
+  color: #BF360C;                    /* Deep red-brown for emphasis */
+}
+
+/* Status dropdown inside task */
+#taskList select {
+  padding: 4px 8px;                  /* Smaller padding for dropdown */
+  border: 1px solid #FFB997;        /* Match form border color */
+  border-radius: 4px;               /* Rounded corners */
+  background-color: #FFE8D6;        /* Match form background */
+  color: #5D4037;                    /* Brown text */
+}
