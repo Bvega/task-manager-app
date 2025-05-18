@@ -1,26 +1,26 @@
 // src/app.js
-// Task Manager App logic (wrapped in DOMContentLoaded to avoid initialization errors)
+// Task Manager App logic (Feature 8: remove tasks)
 
 document.addEventListener("DOMContentLoaded", () => {
   // 1. Load tasks from localStorage or start empty
   const tasks = JSON.parse(localStorage.getItem("tasks")) || [];
 
   // 2. Reference DOM elements
-  const taskNameInput     = document.getElementById("taskName");     // Task name field
-  const taskCategoryInput = document.getElementById("taskCategory"); // Task category field
-  const taskDeadlineInput = document.getElementById("taskDeadline"); // Task deadline field
-  const taskStatusSelect  = document.getElementById("taskStatus");   // Initial status dropdown
-  const addTaskBtn        = document.getElementById("addTaskBtn");   // “Add Task” button
-  const statusFilter      = document.getElementById("statusFilter");   // Status filter dropdown
-  const categoryFilter    = document.getElementById("categoryFilter"); // Category filter dropdown
-  const taskList          = document.getElementById("taskList");       // UL for rendering tasks
+  const taskNameInput     = document.getElementById("taskName");
+  const taskCategoryInput = document.getElementById("taskCategory");
+  const taskDeadlineInput = document.getElementById("taskDeadline");
+  const taskStatusSelect  = document.getElementById("taskStatus");
+  const addTaskBtn        = document.getElementById("addTaskBtn");
+  const statusFilter      = document.getElementById("statusFilter");
+  const categoryFilter    = document.getElementById("categoryFilter");
+  const taskList          = document.getElementById("taskList");
 
   // 3. saveTasks(): persist the tasks array to localStorage
   function saveTasks() {
     localStorage.setItem("tasks", JSON.stringify(tasks));
   }
 
-  // 4. renderTasks(): updates the UI, handles overdue, filtering, and status dropdowns
+  // 4. renderTasks(): updates the UI, handles overdue, filtering, status dropdowns, and remove buttons
   function renderTasks() {
     const statusValue   = statusFilter.value;
     const categoryValue = categoryFilter.value;
@@ -32,20 +32,20 @@ document.addEventListener("DOMContentLoaded", () => {
       .join("");
 
     taskList.innerHTML = "";                            
-    const today = new Date().toISOString().split("T")[0]; // YYYY-MM-DD
+    const today = new Date().toISOString().split("T")[0];
 
     tasks.forEach((task, index) => {
       // auto-mark overdue
       if (task.status !== "Completed" && task.deadline < today) {
-        task.status = "Overdue";                     
-        saveTasks();                                  // persist overdue update
+        task.status = "Overdue";
+        saveTasks();
       }
 
       // apply filters
       if (statusValue !== "All" && task.status !== statusValue) return;
       if (categoryValue !== "All" && task.category !== categoryValue) return;
 
-      // build list item with status dropdown
+      // build list item with status dropdown and remove button
       const li = document.createElement("li");
       const statusSelect = `
         <select data-index="${index}">
@@ -55,10 +55,15 @@ document.addEventListener("DOMContentLoaded", () => {
         </select>
       `;
       li.innerHTML = `
-        <strong>${task.name}</strong> -
-        ${task.category} -
-        Due: ${task.deadline} -
-        Status: ${statusSelect}
+        <div class="task-info">
+          <strong>${task.name}</strong> -
+          ${task.category} -
+          Due: ${task.deadline} -
+        </div>
+        <div class="task-controls">
+          ${statusSelect}
+          <button class="remove-btn" data-index="${index}">Remove</button>
+        </div>
       `;
       taskList.appendChild(li);
     });
@@ -67,9 +72,19 @@ document.addEventListener("DOMContentLoaded", () => {
     document.querySelectorAll("#taskList select").forEach(sel => {
       sel.addEventListener("change", function() {
         const i = parseInt(this.dataset.index, 10);
-        tasks[i].status = this.value;                 // update status
-        saveTasks();                                  // persist status change
-        renderTasks();                                // refresh UI
+        tasks[i].status = this.value;
+        saveTasks();
+        renderTasks();
+      });
+    });
+
+    // wire remove-button listeners
+    document.querySelectorAll(".remove-btn").forEach(btn => {
+      btn.addEventListener("click", function() {
+        const i = parseInt(this.dataset.index, 10);
+        tasks.splice(i, 1);  // remove this task from array
+        saveTasks();         // persist changes
+        renderTasks();       // re-render list
       });
     });
   }
@@ -82,15 +97,14 @@ document.addEventListener("DOMContentLoaded", () => {
     const status   = taskStatusSelect.value;
 
     if (!name || !category || !deadline) {
-      alert("Please fill in all fields.");        // prevent empty entries
+      alert("Please fill in all fields.");
       return;
     }
 
-    tasks.push({ name, category, deadline, status });  // store new task
-    saveTasks();                                       // persist it
-    renderTasks();                                     // update UI
+    tasks.push({ name, category, deadline, status });
+    saveTasks();
+    renderTasks();
 
-    // reset form
     taskNameInput.value     = "";
     taskCategoryInput.value = "";
     taskDeadlineInput.value = "";
