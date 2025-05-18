@@ -29,3 +29,8 @@
 
 ### [Stage 7] – 2025-05-13
 - Applied warm color palette with responsive styling
+
+### [Stage 8] – 2025-05-13
+- Injected “Remove” button for each task
+- Implemented deletion via `tasks.splice()`
+- Persisted removal and re-rendered list

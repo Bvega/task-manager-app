@@ -64,4 +64,13 @@
 1. **body styles**: Soft ivory background, warm brown text.  
 2. **Form & filters**: Flex layout, coral borders, peach inputs.  
 3. **Buttons**: Warm orange with hover effect.  
-4. **Task list**: Coral cards, accent bars, rounded corners.  
+4. **Task list**: Coral cards, accent bars, rounded corners.
+
+## Stage 8: Removing Tasks
+1. **Remove button injection**  
+   - In `renderTasks()`, for each `<li>`, append a `<button class="remove-btn" data-index="${index}">Remove</button>`.  
+2. **Delete logic**  
+   - After rendering, attach `click` listeners to `.remove-btn` elements.  
+   - In the handler, use `tasks.splice(index, 1)` to remove the task from the array.  
+3. **Persist & re-render**  
+   - Call `saveTasks()` then `renderTasks()` after deletion to update UI and storage.  
